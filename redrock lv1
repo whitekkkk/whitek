@@ -1,0 +1,38 @@
+import java.sql.*;
+
+public class JDBCUtil {
+    static{//加载JDBC驱动程序
+        try{
+            String diverName= "com.mysql.cj.jdbc.Driver";
+
+            Class.forName(diverName);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static Connection getConnection(){//创建数据库连接
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection("jdbc:mysql://localhost/redrock"+"?serverTimezone=GMT%2B8","root","");//北京时间东八区，时区要设置好，不然会出现时差
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return con;
+    }
+    public static void close(ResultSet rs,PreparedStatement preparedStatement ){//关闭数据库连接
+
+        try {
+            if (rs != null)
+                rs.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        try{
+            if (preparedStatement != null)
+                preparedStatement.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+}
