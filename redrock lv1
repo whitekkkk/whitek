@@ -36,3 +36,103 @@ public class JDBCUtil {
         }
     }
 }
+
+
+import java.sql.*;
+
+public class Main {
+    PreparedStatement preparedStatement;
+    ResultSet rs;
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    public PreparedStatement getPreparedStatement() {
+        return preparedStatement;
+    }
+
+    public void createTable()throws SQLException {//建表
+        Connection con = JDBCUtil.getConnection();
+        String sql = "create table if not exists student (id int ,name varchar(10),age int,height int,hobby varchar (20))";//列
+        preparedStatement=con.prepareStatement(sql);
+        preparedStatement.executeUpdate();
+
+    }
+    public void insert()throws SQLException{//增加
+        Connection con = JDBCUtil.getConnection();
+        String sql="insert into student values(?,?,?,?,?)";
+        preparedStatement=con.prepareStatement(sql);
+        preparedStatement.setInt(1,01);
+        preparedStatement.setString(2,"Jack");
+        preparedStatement.setInt(3,18);
+        preparedStatement.setInt(4,175);
+        preparedStatement.setString(5,"Basketball");
+        preparedStatement.executeUpdate();
+        String sql1="insert into student values(?,?,?,?,?)";
+        preparedStatement=con.prepareStatement(sql1);
+        preparedStatement.setInt(1,02);
+        preparedStatement.setString(2,"Tom");
+        preparedStatement.setInt(3,18);
+        preparedStatement.setInt(4,178);
+        preparedStatement.setString(5,"Football");
+        preparedStatement.executeUpdate();
+        String sql2="insert into student values(?,?,?,?,?)";
+        preparedStatement=con.prepareStatement(sql2);
+        preparedStatement.setInt(1,03);
+        preparedStatement.setString(2,"Jerry");
+        preparedStatement.setInt(3,19);
+        preparedStatement.setInt(4,185);
+        preparedStatement.setString(5,"Badminton");
+        preparedStatement.executeUpdate();
+        con.close();
+    }
+
+        public void update()throws SQLException{//更新
+        Connection con=JDBCUtil.getConnection();
+        String sql="update student set height=? where id=?";
+        preparedStatement=con.prepareStatement(sql);
+        preparedStatement.setString(1,"190");
+        preparedStatement.setInt(2,01);
+        preparedStatement.executeUpdate();
+        con.close();
+        }
+        public void delete()throws SQLException{//删除
+        Connection con=JDBCUtil.getConnection();
+        String sql="delete from student where name=?";
+        preparedStatement=con.prepareStatement(sql);
+        preparedStatement.setString(1,"Tom");
+        preparedStatement.executeUpdate();
+        con.close();
+        }
+        public void select()throws SQLException{//查询
+        Connection con=JDBCUtil.getConnection();
+        String sql="select*from student";
+        preparedStatement=con.prepareStatement(sql);
+        rs=preparedStatement.executeQuery();
+                while(rs.next())
+                {
+                    int id=rs.getInt("id");
+                    String name=rs.getString("name");
+                    int age=rs.getInt("age");
+                    int height=rs.getInt("height");
+                    String hobby=rs.getString("hobby");
+                    System.out.println(id+"---"+name+"---"+age+"---"+height+"---"+hobby+'\n');
+                }
+
+        }
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        try {
+            main.createTable();
+            main.insert();
+            main.update();
+            main.delete();
+            main.select();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            JDBCUtil.close(main.getRs(),main.getPreparedStatement());
+        }
+    }
+}
